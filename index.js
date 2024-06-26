@@ -35,7 +35,7 @@ const port = 3000;
 //connection
 //instead of .then and .catch i will use event emitter used with mongoose.connect
 // const DBURL = process.env.DB_URL
-const DBURL = 'mongodb://127.0.0.1:27017/yelp-camp'
+const DBURL = process.env.DB_URL
 
 mongoose.connect(DBURL).then(()=>{
     console.log("connection In!!")
