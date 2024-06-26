@@ -1,0 +1,88 @@
+joi is used for server side validation
+
+Passport initialization.
+ *
+ * Intializes Passport for incoming requests, allowing authentication strategies
+ * to be applied.
+ *
+ * If sessions are being utilized, applications must set up Passport with
+ * functions to serialize a user into and out of a session.  For example, a
+ * common pattern is to serialize just the user ID into the session (due to the
+ * fact that it is desirable to store the minimum amount of data in a session).
+ * When a subsequent request arrives for the session, the full User object can
+ * be loaded from the database by ID.
+ *
+ * Note that additional middleware is required to persist login state, so we
+ * must use the `connect.session()` middleware _before_ `passport.initialize()`.
+ *
+ * If sessions are being used, this middleware must be in use by the
+ * Connect/Express application for Passport to operate.  If the application is
+ * entirely stateless (not using sessions), this middleware is not necessary,
+ * but its use will not have any adverse impact.
+...
+
+app.use(passport.initialize())
+app.use(passport.session())
+passport.use(new LocalStrategy(User.authenticate))
+passport.serializeUser(User.serializeUser())//store user in the session
+passport.deserializeUser(User.deserializeUser())//get user out of session
+
+
+/register 
+    const user = await new User({username, email})//create a new user without password
+    const result = await User.register(user, password) //passport-local-mongoose provide a static function for the schema and we have to pass the user instance made with password as argument. passpost-local-mongoose will create a new user with after hashing password and adding salt
+
+/login
+    passport have a middleware passport.authenticate('local'(passport type we are using),{ { failureFlash: true,failureRedirect: '/login' }})
+
+    it also provide req.isAuthenticate method which can be used to check user is authenicated or not
+
+req.login(user, callback) method establish a login in session... this is primarly use when signup/register...coz req.authenticate automatically do this 
+
+uploading images and file (enctype means encoding type)
+point1: we don't save images and file in mongodb because of file limitations that we use cloud database like aws or cloudinary which store file or images and provide link which we store in database.
+point2: we can't use normal html form because of its enctype formal form send data enctype : application/x-www-form-urlencoded by for files and images we want enctype : multipart/form data
+point3: application/x-www-form-urlencoded : it is format of sharing data through form, It is a way of encoding key-value pairs as a string in the format of key1=value1&key2=value2.
+point4; enctype : multipart/form-data : it is used when form contain input type files
+
+express provide parsing middleware for urlencoded and json encoded type 
+app.use(express.urlencoded({extended:true}))
+app.use(express.json({extended:true}))
+
+but for enctype : multipart/form-data we need addtional middleware to parse it (Multer)
+Multer is a node.js middleware for handling multipart/form-data, which is primarily used for uploading files. It is written on top of busboy for maximum efficiency.
+
+Multer parsing for single file
+ .post(upload.single('image'),(req,res)=>{
+        console.log(req.body)
+        res.send(req.file)
+    })
+
+Multer parsing for multiple files //upload.array('image') for arrayb of files
+.post(upload.array('image'),(req,res)=>{
+        console.log(req.body)
+        res.send(req.files) //req.files for multiple files 
+    })
+
+
+multer-storage-cloudinary is a package used for smooth transaction of data between multer and cloudinary
+
+we are using maptiler for goecoding
+geocoding is translating some location into geological coordinates
+forward geocoding is translating human readable address into goelocation 
+reverse geocoding is translating geolocation to human readable address
+
+npm install @maptiler/client@1.8.1 package for maptiler
+
+Security issues:
+
+1.
+Sql Injection : In computing, SQL injection is a code injection technique used to attack data-driven applications, in which malicious SQL statements are inserted into an entry field for execution (e.g. to dump the database contents to the attacker).
+to prevent this is mongodb we can use package express-mongodb-sanatize package this prevent hacker to inject sql query from any request object (req.body, req.query, req.params)
+const mongoSanitize = require('express-mongo-sanitize');
+app.use(mongoSanitize())
+
+2.
+XSS Scripting : 
+
+

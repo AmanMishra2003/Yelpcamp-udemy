@@ -1,0 +1,78 @@
+<% layout('layout/boilerplate') %>
+    <div class="row">
+        <h1 class="text-center">Edit campground</h1>
+        <div class="col-10 offset-1 col-md-6 offset-md-3">
+            <form action="/campgrounds/<%= campgrounds._id%>?_method=PUT" method="POST" class="validatedForm"
+                novalidate enctype="multipart/form-data">
+                <div class="mb-3">
+                    <label for="title" class="form-label">Title</label>
+                    <input type="text" name="campground[title]" id="title" class="form-control"
+                        value="<%= campgrounds.title%>" required>
+                    <div class="valid-feedback">
+                        Looks good!
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="location" class="form-label">location</label>
+                    <input type="text" name="campground[location]" id="location" class="form-control"
+                        value="<%= campgrounds.location%>" required>
+                    <div class="valid-feedback">
+                        Looks good!
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="formFileMultiple" class="form-label">Upload More Images</label>
+                    <input class="form-control" type="file" id="formFileMultiple" name="image" multiple>
+                    <div class="valid-feedback">
+                        Looks good!
+                      </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="price" class="form-label">Campground Price</label>
+                    <div class="input-group">
+                        <span class="input-group-text" id="price">$</span>
+                        <input type="text" class="form-control" aria-label="Amount (to the nearest dollar)"
+                            name="campground[price]" id="price" placeholder="0.00" aria-describedby="price"
+                            value="<%= campgrounds.price%>" required>
+                        <div class="valid-feedback">
+                            Looks good!
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="description" class="form-label">Description</label>
+                    <textarea type="text" name="campground[description]" id="description" class="form-control"
+                        required><%= campgrounds.description%></textarea>
+                    <div class="valid-feedback">
+                        Looks good!
+                    </div>
+                </div>
+
+                <div class="my-3">
+                    <% campgrounds.image.forEach((ele,i) => { %>
+                        <!-- <div class="d-lg-flex align-items-center "> -->
+                        <img src="<%= ele.thumbnail %>" alt="" srcset="" class="img-thumbnail" >
+                        <div class="btn-group" role="group" aria-label="Basic checkbox toggle button group">
+                            <input type="checkbox" class="btn-check" id="image-[<%= i %>]" autocomplete="off" value="<%= ele.filename %>" name="deleteImages[]">
+                            <label class="btn btn-outline-danger h-25" for="image-[<%= i %>]">Delete</label>
+                        </div>
+                        <!-- </div> -->
+                    <% }) %>
+                </div>
+
+                <div class="d-flex justify-content-between">
+                    <button type="submit" class="btn btn-success text-white ">Edit Campgrounds</button>
+                    <button class="btn btn-danger back"><a href="/campgrounds/<%= campgrounds._id%>"
+                            class="text-decoration-none text-white">Back to Campgrounds</a></button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script>
+        const btn = document.querySelector('.back')
+        btn.onClick = (e)=>{
+            e.preventDefault()
+        }
+    </script>
